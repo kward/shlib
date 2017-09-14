@@ -1,6 +1,8 @@
 #! /bin/sh
-# $Id$
 # vim:et:ft=sh:sts=2:sw=2
+#
+# Versions
+# https://github.com/kward/shlib/blob/master/standalone/versions
 #
 # Copyright 2008-2016 Kate Ward. All Rights Reserved.
 # Released under the Apache License.
