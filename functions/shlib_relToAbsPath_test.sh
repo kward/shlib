@@ -50,7 +50,7 @@ oneTimeSetUp() {
 	SHLIB_PWD_DEFAULT=${SHLIB_PWD}
 
 	# Load the function.
-  . './'`basename $0 |sed 's/_test.sh$/.sh/'`
+  . './'`basename $0 |sed 's/_test.sh$//'`
 }
 
 setUp() {
