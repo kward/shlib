@@ -5,8 +5,6 @@
 # Author: kate.ward@forestent.com (Kate Ward)
 # Repository: https://github.com/kward/shlib
 
-mock_pwd() { echo '/path/to/cwd'; }
-
 testRelToAbsPath() {
   pwd='mock_pwd'
 
@@ -46,10 +44,12 @@ EOF
   exec 0<&9 9<&-
 }
 
-oneTimeSetUp() {
-	SHLIB_PWD_DEFAULT=${SHLIB_PWD}
+mock_pwd() { echo '/path/to/cwd'; }
 
-	# Load the function.
+oneTimeSetUp() {
+  SHLIB_PWD_DEFAULT=${SHLIB_PWD}
+
+  # Load the function.
   . './'`basename $0 |sed 's/_test.sh$//'`
 }
 
