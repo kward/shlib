@@ -1,9 +1,9 @@
 # vim:et:ft=sh:sts=2:sw=2
-#
 # Copyright 2008 Kate Ward. All Rights Reserved.
 # Released under the Apache 2.0 license.
 #
 # Author: kate.ward@forestent.com (Kate Ward)
+# Repository: https://github.com/kward/shlib
 
 SHLIB_PWD='pwd'
 

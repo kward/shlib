@@ -3,6 +3,7 @@
 # Released under the Apache 2.0 license.
 #
 # Author: kate.ward@forestent.com (Kate Ward)
+# Repository: https://github.com/kward/shlib
 
 mock_pwd() { echo '/path/to/cwd'; }
 
