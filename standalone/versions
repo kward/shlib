@@ -12,6 +12,9 @@
 # This library provides reusable functions that determine actual names and
 # versions of installed shells and the OS. The library can also be run as a
 # script if set executable.
+#
+# Disable checks that aren't fully portable (POSIX != portable).
+# shellcheck disable=SC2006
 
 ARGV0=`basename "$0"`
 LSB_RELEASE='/etc/lsb-release'
@@ -81,6 +84,7 @@ versions_osVersion() {
     Linux)
       if [ -r "${LSB_RELEASE}" ]; then
         if grep -q 'DISTRIB_ID=Ubuntu' "${LSB_RELEASE}"; then
+          # shellcheck disable=SC2002
           os_version_=`cat "${LSB_RELEASE}" \
             |awk -F= '$1~/DISTRIB_DESCRIPTION/{print $2}' \
             |sed 's/"//g;s/ /-/g'`
@@ -191,7 +195,7 @@ versions_shell_ksh() {
 
 versions_shell_pdksh() {
   _versions_have_strings
-  strings $1 2>&1 \
+  strings "$1" 2>&1 \
   |grep 'PD KSH' \
   |sed -e 's/.*PD KSH \(.*\)/\1/;s/ /-/g'
 }
@@ -200,6 +204,7 @@ versions_shell_zsh() {
   versions_shell_=$1
 
   # Try a few different ways to figure out the version.
+  # shellcheck disable=SC2016
   versions_version_=`echo 'echo ${ZSH_VERSION}' |${versions_shell_}`
 
   if [ -z "${versions_version_}" ]; then
