@@ -50,7 +50,7 @@ oneTimeSetUp() {
 
   # Load the function.
   # shellcheck disable=SC1090
-  . './'"$(basename "$0" |sed 's/_test.sh$//')"
+  . "$(echo "$0" |sed 's/_test.sh$//')"
 }
 
 setUp() {
@@ -63,4 +63,4 @@ tearDown() {
 
 # Run shUnit2.
 # shellcheck disable=SC1091
-. ../lib/shunit2
+. "${SHLIB_LIBDIR:-../lib}/shunit2"
