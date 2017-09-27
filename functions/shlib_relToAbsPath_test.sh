@@ -61,5 +61,6 @@ tearDown() {
   SHLIB_PWD=${SHLIB_PWD_DEFAULT}
 }
 
-# Run shunit2.
+# Run shUnit2.
+# shellcheck disable=SC1091
 . ../lib/shunit2

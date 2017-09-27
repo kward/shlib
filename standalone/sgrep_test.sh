@@ -42,4 +42,6 @@ ghi = jkl
 EOF
 }
 
+# Run shUnit2.
+# shellcheck disable=SC1091
 . ../lib/shunit2
