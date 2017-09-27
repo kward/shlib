@@ -8,7 +8,18 @@
 # Author: kate.ward@forestent.com (Kate Ward)
 # https://github.com/kward/shlib
 
-BASENAME="$(basename "$0")"
-export SHLIB_LIBDIR='lib'
+export SHLIB_LIBDIR='../lib'
 
-find . -name "*.sh" |grep -v "/${BASENAME}$" |xargs -n1 -P1 /bin/sh
+for d in functions standalone; do
+  (
+  	cd "${d}"
+  	tests="$(echo *_test.sh)"
+  	for t in ${tests}; do
+  		echo "-------------------------------------------------------------------------------"
+  		echo "Running ${d}/${t}".
+  		echo
+  	  ( "./${t}"; )
+  	  echo
+  	done
+  )
+done
