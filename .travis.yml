@@ -2,6 +2,6 @@ language: bash
 
 script:
   # Run
-  - bash -c 'shopt -s globstar; shellcheck **/*.sh standalone/*'
+  - bash -c 'shopt -s globstar; shellcheck functions/*.sh standalone/*'
   - bash -c 'shopt -s globstar; echo functions/* |fmt -1 |grep -v .sh$ | xargs shellcheck -s sh'
   - ./shlib_test.sh

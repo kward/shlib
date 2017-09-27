@@ -43,5 +43,5 @@ EOF
 }
 
 # Run shUnit2.
-# shellcheck disable=SC1091
+# shellcheck disable=SC1090,SC1091
 . "${SHLIB_LIBDIR:-../lib}/shunit2"
