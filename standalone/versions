@@ -1,13 +1,13 @@
 #! /bin/sh
 # vim:et:ft=sh:sts=2:sw=2
 #
-# Versions
-# https://github.com/kward/shlib/blob/master/standalone/versions
+# Versions determines the versions of all installed shells.
 #
-# Copyright 2008-2016 Kate Ward. All Rights Reserved.
-# Released under the Apache License.
+# Copyright 2008-2017 Kate Ward. All Rights Reserved.
+# Released under the Apache 2.0 License.
 #
 # Author: kate.ward@forestent.com (Kate Ward)
+# https://github.com/kward/shlib
 #
 # This library provides reusable functions that determine actual names and
 # versions of installed shells and the OS. The library can also be run as a

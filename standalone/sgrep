@@ -2,7 +2,7 @@
 #
 # Section grep. Grep file section where records are separated by blank lines.
 #
-# Copyright 2008-2017 Kate Ward. All Rights Reserved.
+# Copyright 2017 Kate Ward. All Rights Reserved.
 # Released under the Apache 2.0 license.
 #
 # Author: kate.ward@forestent.com (Kate Ward)
@@ -19,12 +19,13 @@ set -u
 
 true; TRUE=$?
 false; FALSE=$?
+ERROR=2
 
 invert=${FALSE}
-die() { [ $# -gt 0 ] && echo $@ >&2; exit 1; }
+die() { [ $# -gt 0 ] && echo "$@" >&2; exit ${ERROR}; }
 usage() { echo "usage: $0 [-v] pattern [file]"; }
 
-case `uname -s` in
+case $(uname -s) in
   Darwin)
     die 'sed needs -r support (or sgrep needs to be fixed)'
     ;;
@@ -32,10 +33,10 @@ case `uname -s` in
     if [ -x /opt/csw/bin/gsed ]; then
       sed=/opt/csw/bin/gsed
     else
-      die 'error: need working sed'
+      die 'error: need a working sed'
     fi
     ;;
-  *) sed=sed ;;
+  *) sed='sed' ;;
 esac
 
 # Process command line flags.
@@ -43,20 +44,22 @@ while getopts 'hv' opt; do
   case ${opt} in
     h) usage; exit 0 ;;
     v) invert=${TRUE} ;;
+    *) die "error: unrecognized option ${opt}" ;;
   esac
 done
-shift `expr ${OPTIND} - 1`
+# shellcheck disable=SC2003
+shift "$(expr ${OPTIND} - 1)"
 
 if [ $# -eq 0 ]; then
   usage
-  exit 1
+  exit ${FALSE}
 fi
 
 pattern=${1:-}
 shift
 
 # Escape any '\' chars in the pattern.
-escPattern=`echo "${pattern}" |sed 's!\\/!\\\\/!g'`
+escPattern=$(echo "${pattern}" |sed 's!\\/!\\\\/!g')
 
 # Build sed pattern.
 if [ ${invert} -eq ${FALSE} ]; then
