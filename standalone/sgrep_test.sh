@@ -13,7 +13,7 @@
 test_sgrep() {
   expected="[section 1]
 abc = def"
-  result=$(sgrep 'def' "${dataFile}" 2>&1)
+  result=$(./sgrep 'def' "${dataFile}" 2>&1)
   assertEquals "${expected}" "${result}"
 
   expected="[section 2]
@@ -21,7 +21,7 @@ abc = ghi
 
 [section 4]
 ghi = jkl"
-  result=$(sgrep 'ghi' "${dataFile}" 2>&1)
+  result=$(./sgrep 'ghi' "${dataFile}" 2>&1)
   assertEquals "${expected}" "${result}"
 }
 
