@@ -8,8 +8,12 @@
 # Author: kate.ward@forestent.com (Kate Ward)
 # https://github.com/kward/shlib
 
+true; TRUE=$?
+false; FALSE=$?
+
 export SHLIB_LIBDIR='../lib'
 
+rtrn=${TRUE}
 for d in functions standalone; do
   (
   	cd "${d}"
@@ -19,7 +23,11 @@ for d in functions standalone; do
   		echo "Running ${d}/${t}".
   		echo
   	  ( "./${t}"; )
+  	  [ $? -eq ${TRUE} ] || rtrn=${FALSE}
   	  echo
   	done
+  	exit "${rtrn}"
   )
+  rtrn=$?
 done
+exit "${rtrn}"
