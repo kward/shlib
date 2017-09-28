@@ -21,8 +21,10 @@
 shlib_random() {
   shlib_random_=0
 
+  # shellcheck disable=SC2039
   if \[ -n "${RANDOM:-}" ]; then
     # $RANDOM works
+    # shellcheck disable=SC2039
     shlib_random_=${RANDOM}
   elif \[ -r '/dev/urandom' ]; then
     shlib_random_=$(od -vAn -N4 -tu4 </dev/urandom |sed 's/^[^0-9]*//')
