@@ -16,17 +16,17 @@ export SHLIB_LIBDIR='../lib'
 rtrn=${TRUE}
 for d in functions standalone; do
   (
-  	cd "${d}"
-  	tests="$(echo *_test.sh)"
-  	for t in ${tests}; do
-  		echo "-------------------------------------------------------------------------------"
-  		echo "Running ${d}/${t}".
-  		echo
-  	  ( "./${t}"; )
-  	  [ $? -eq ${TRUE} ] || rtrn=${FALSE}
-  	  echo
-  	done
-  	exit "${rtrn}"
+    cd "${d}"
+    tests="$(echo *_test.sh)"
+    for t in ${tests}; do
+      echo "-------------------------------------------------------------------------------"
+      echo "Running ${d}/${t}".
+      echo
+      ( "./${t}"; )
+      [ $? -eq ${TRUE} ] || rtrn=${FALSE}
+      echo
+    done
+    exit "${rtrn}"
   )
   rtrn=$?
 done
