@@ -6,8 +6,6 @@
 # Repository: https://github.com/kward/shlib
 
 testRelToAbsPath() {
-  pwd='mock_pwd'
-
   cwd='/path/to/cwd'
   parent='/path/to'
   grandparent='/path'
@@ -33,12 +31,13 @@ abc/../def/../ghi ${cwd}/ghi
 ../../abc/def ${grandparent}/abc/def
 ${cwd}/../../abc/def ${grandparent}/abc/def
 EOF
+  # shellcheck disable=SC2162
   while read relPath absPath; do
     # Ignore comment and blank lines.
-    echo "${relPath}" |egrep -v "^(#|$)" >/dev/null || continue
+    echo "${relPath}" |grep -Ev "^(#|$)" >/dev/null || continue
 
     # Test the function.
-    newPath=`PWD=${cwd} shlib_relToAbsPath "${relPath}"`
+    newPath=$(PWD=${cwd} shlib_relToAbsPath "${relPath}")
     assertEquals "${relPath}" "${absPath}" "${newPath}"
   done
   exec 0<&9 9<&-
@@ -50,7 +49,8 @@ oneTimeSetUp() {
   SHLIB_PWD_DEFAULT=${SHLIB_PWD}
 
   # Load the function.
-  . './'`basename $0 |sed 's/_test.sh$//'`
+  # shellcheck disable=SC1090
+  . "$(echo "$0" |sed 's/_test.sh$//')"
 }
 
 setUp() {
@@ -61,5 +61,6 @@ tearDown() {
   SHLIB_PWD=${SHLIB_PWD_DEFAULT}
 }
 
-# Run shunit2.
-. ../lib/shunit2
+# Run shUnit2.
+# shellcheck disable=SC1090,SC1091
+. "${SHLIB_LIBDIR:-../lib}/shunit2"

@@ -2,6 +2,8 @@
 
 Useful Shell routines.
 
+[![Travis CI](https://travis-ci.org/kward/shlib.png?branch=master)](https://travis-ci.org/kward/shlib)
+
 ## functions
 
 Files in the `functions` folder provide specific functionality.

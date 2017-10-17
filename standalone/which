@@ -1,34 +1,45 @@
 #! /bin/sh
+# vim:et:ft=sh:sts=2:sw=2
 #
 # This is a simple implementation of the 'which' command for those OSes that
 # don't have one.
+#
+# Copyright 2017 Kate Ward. All Rights Reserved.
+# Released under the Apache 2.0 License.
+#
+# Author: kate.ward@forestent.com (Kate Ward)
+# https://github.com/kward/shlib
 
 true; TRUE=$?
 false; FALSE=$?
+ERROR=2
 
 showAll=${FALSE}
 
 # Process command line flags.
 while getopts 'a' opt; do
   case ${opt} in
-    a) showAll=${TRUE}
+    a) showAll=${TRUE} ;;
+    *) echo "error: unrecognized option ${opt}" >&2; exit ${ERROR} ;;
   esac
 done
-shift `expr ${OPTIND} - 1`
+# shellcheck disable=SC2003
+shift "$(expr ${OPTIND} - 1)"
 
 # Exit if no arguments were given.
-[ $# -eq 0 ] && exit 1
+[ $# -eq 0 ] && exit ${ERROR}
 
 command=$1
 
 # Search for command.
-out=`echo "${PATH}" |sed "s/:/\n/g" |\
+# shellcheck disable=SC1117,SC2162
+out=$(echo "${PATH}" |sed "s/:/\n/g" |\
 while read path; do
   fullPath="${path}/${command}"
   if [ -x "${fullPath}" ]; then
     echo "${fullPath}"
     [ ${showAll} -eq ${FALSE} ] && break
   fi
-done`
-[ -z "${out}" ] && exit 1
+done)
+[ -z "${out}" ] && exit ${ERROR}
 echo "${out}"

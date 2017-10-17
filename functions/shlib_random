@@ -1,0 +1,40 @@
+# vim:et:ft=sh:sts=2:sw=2
+#
+# Copyright 2017 Kate Ward. All Rights Reserved.
+# Released under the Apache 2.0 license.
+#
+# Author: kate.ward@forestent.com (Kate Ward)
+# Repository: https://github.com/kward/shlib
+#
+# expr may be antiquated, but it is the only solution in some cases.
+#   shellcheck disable=SC2003
+
+# shlib_random generates a random number.
+#
+# This routine should only be used when a pseudo-random number is required. It
+# is by no means sufficient for security or cryptography applications.
+#
+# Args:
+#   none
+# Outputs:
+#   int: a value between 0-65535
+shlib_random() {
+  shlib_random_=0
+
+  # shellcheck disable=SC2039
+  if \[ -n "${RANDOM:-}" ]; then
+    # $RANDOM works
+    # shellcheck disable=SC2039
+    shlib_random_=${RANDOM}
+  elif \[ -r '/dev/urandom' ]; then
+    shlib_random_=$(od -vAn -N4 -tu4 </dev/urandom |sed 's/^[^0-9]*//')
+    shlib_random_=$(expr "${shlib_random_}" % 65536)
+  else
+    shlib_date_=$(date '+%H%M%S')
+    shlib_random_=$(expr "${shlib_date_}" \* $$ % 65536)
+    unset shlib_date_
+  fi
+
+  echo "${shlib_random_}"
+  unset shlib_random_
+}
