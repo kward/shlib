@@ -7,6 +7,10 @@
 #
 # Author: kate.ward@forestent.com (Kate Ward)
 # https://github.com/kward/shlib
+#
+### ShellCheck (http://www.shellcheck.net/)
+# Disable source following.
+#   shellcheck disable=SC1090,SC1091
 
 # Treat unset variables as an error.
 set -u

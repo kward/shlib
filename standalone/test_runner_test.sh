@@ -7,11 +7,16 @@
 #
 # Author: kate.ward@forestent.com (Kate Ward)
 # https://github.com/kward/shlib
+#
+### ShellCheck (http://www.shellcheck.net/)
+# Disable source following.
+#   shellcheck disable=SC1090,SC1091
 
 # Treat unset variables as an error.
 set -u
 
 test_testName() {
+	# shellcheck disable=SC2162
 	while read desc t tName; do
 		got=$(_runner_testName "${t}")
 		want=${tName}
