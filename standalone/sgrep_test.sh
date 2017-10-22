@@ -7,8 +7,6 @@
 #
 # Author: kate.ward@forestent.com (Kate Ward)
 # https://github.com/kward/shlib
-#
-# Unit tests for sgrep
 
 test_sgrep() {
   expected="[section 1]
