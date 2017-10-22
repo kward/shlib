@@ -8,10 +8,16 @@
 # Author: kate.ward@forestent.com (Kate Ward)
 # https://github.com/kward/shlib
 
+# Treat unset variables as an error.
+set -u
+
+# DATA_FILE will be overridden in oneTimeSetUp().
+DATA_FILE=''
+
 test_sgrep() {
   expected="[section 1]
 abc = def"
-  result=$(./sgrep 'def' "${dataFile}" 2>&1)
+  result=$(./sgrep 'def' "${DATA_FILE}" 2>&1)
   assertEquals "${expected}" "${result}"
 
   expected="[section 2]
@@ -19,13 +25,13 @@ abc = ghi
 
 [section 4]
 ghi = jkl"
-  result=$(./sgrep 'ghi' "${dataFile}" 2>&1)
+  result=$(./sgrep 'ghi' "${DATA_FILE}" 2>&1)
   assertEquals "${expected}" "${result}"
 }
 
-setUp() {
-  dataFile="${__shunit_tmpDir:-/tmp}/data"
-  cat >"${dataFile}" <<EOF
+oneTimeSetUp() {
+  DATA_FILE="${SHUNIT_TMPDIR}/data"
+  cat >"${DATA_FILE}" <<EOF
 [section 1]
 abc = def
 
@@ -40,6 +46,18 @@ ghi = jkl
 EOF
 }
 
-# Run shUnit2.
-# shellcheck disable=SC1090,SC1091
-. "${SHLIB_LIBDIR:-../lib}/shunit2"
+setUp() {
+  case $(uname -s) in
+  	Darwin) startSkipping ;;
+  esac
+}
+
+# Configure zsh properly for shUnit2.
+if [ -n "${ZSH_VERSION:-}" ]; then
+  # shellcheck disable=SC2034
+  SHUNIT_PARENT=$0
+  setopt shwordsplit
+fi
+
+# Load and run shUnit2.
+. "${SHUNIT_INC:-../lib/shunit2}"
