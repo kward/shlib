@@ -87,6 +87,8 @@ versions_osVersion() {
             |sed 's/"//g'`
       elif [ -r '/etc/redhat-release' ]; then
         os_version_=`cat /etc/redhat-release`
+      elif [ -r '/etc/SuSE-release' ]; then
+        os_version_=`head -n 1 /etc/SuSE-release`
       elif [ -r "${LSB_RELEASE}" ]; then
         if grep -q 'DISTRIB_ID=Ubuntu' "${LSB_RELEASE}"; then
           # shellcheck disable=SC2002
