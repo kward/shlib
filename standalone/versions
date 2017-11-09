@@ -85,6 +85,8 @@ versions_osVersion() {
       if [ -r '/etc/os-release' ]; then
           os_version_=`awk -F= '$1~/PRETTY_NAME/{print $2}' /etc/os-release \
             |sed 's/"//g'`
+      elif [ -r '/etc/redhat-release' ]; then
+        os_version_=`cat /etc/redhat-release`
       elif [ -r "${LSB_RELEASE}" ]; then
         if grep -q 'DISTRIB_ID=Ubuntu' "${LSB_RELEASE}"; then
           # shellcheck disable=SC2002
@@ -92,8 +94,6 @@ versions_osVersion() {
             |awk -F= '$1~/DISTRIB_DESCRIPTION/{print $2}' \
             |sed 's/"//g;s/ /-/g'`
         fi
-      elif [ -r '/etc/redhat-release' ]; then
-        os_version_=`cat /etc/redhat-release`
       fi
       ;;
     SunOS)
