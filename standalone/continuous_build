@@ -1,0 +1,130 @@
+#!/bin/sh
+# vim:et:ft=sh:sts=2:sw=2
+#
+# Continuous build tool for repeatedly building or testing code.
+#
+# Copyright 2010-2018 Kate Ward. All Rights Reserved.
+# Released under the Apache 2.0 license.
+#
+# Author: kate.ward@forestent.com (Kate Ward)
+# https://github.com/kward/shlib
+#
+# This script requires the following libraries:
+# - https://raw.githubusercontent.com/kward/shflags/master/shflags
+# - https://raw.githubusercontent.com/kward/shlib/master/standalone/versions
+#
+# Sample usage:
+# $ ./continuous_build.sh -c ./test_runner -w shflags -O ~/tmp
+#
+### ShellCheck (http://www.shellcheck.net/)
+# Prefer legacy `..` over $(..).
+#   shellcheck disable=SC2006
+# Disable source following.
+#   shellcheck disable=SC1090,SC1091
+# FLAGS_* variables assigned dynamically.
+#   shellcheck disable=SC2154
+# [ p -a q ] is well defined enough for me.
+#   shellcheck disable=SC2166
+
+# Treat unset variables as an error.
+set -u
+
+# Global constants.
+ARGV0=`basename "$0"`
+SHLIB_DIR="../lib"
+
+# Load libraries.
+. "${SHFLAGS_LIB:-${SHLIB_DIR}/shflags}" \
+    || (echo 'unable to load shflags library' >&2; exit 1)
+. "${VERSIONS_LIB:-${SHLIB_DIR}/versions}" \
+    || (echo 'unable to load versions library' >&2; exit 1)
+
+OS="`versions_osName`_`versions_osVersion`"
+OUTPUT_FILE="${OS}"
+
+# Define flags.
+DEFINE_string 'command' '' 'the command to start a build' 'c'
+DEFINE_string 'watch' '' 'file to watch for changes' 'w'
+DEFINE_string 'watch_from' '' 'file containing filenames to watch' 'W'
+DEFINE_string 'output' "${OUTPUT_FILE}" 'output file to write to' 'o'
+DEFINE_string 'output_dir' '' 'directory to write output file' 'O'
+DEFINE_integer 'pause' 5 'pause between successive runs (sec)' 'p'
+
+# shellcheck disable=SC2034
+FLAGS_HELP="USAGE: ${ARGV0} [flags]"
+
+#------------------------------------------------------------------------------
+# functions
+#
+
+# die exits the script, optionally printing a message
+#
+# Args:
+#   message: string: an error message to be output (optional)
+# Output:
+#   string: usable flags
+die() {
+  [ $# -ne 0 ] && echo "$@" >&2
+  exit 1
+}
+
+# isodate outputs the current date in ISO format.
+#
+# Args:
+#   none
+# Output:
+#   string: isodate
+isodate() {
+  date -u '+%Y%m%dT%H%M%SZ'
+}
+
+main() {
+  # Checks.
+  [ -n "${FLAGS_command}" ] || die 'command required'
+  [ -z "${FLAGS_watch}" -a -z "${FLAGS_watch_from}" ] \
+    && die 'one of watch or watch_from required'
+  [ -n "${FLAGS_watch}" -a -n "${FLAGS_watch_from}" ] \
+    && die 'only one of watch or watch_from can be specified'
+  [ -r "${FLAGS_watch}" ] || die 'unable to read watch file'
+  [ -n "${FLAGS_output_dir}" ] || die 'missing output_dir flag'
+  [ -w "${FLAGS_output_dir}" ] || die 'unable to write to output directory'
+
+  watchAge=`stat "${FLAGS_watch}"`
+  watchAgePrev=''
+
+  # Build.
+  while true; do
+    if [ ! "${watchAge}" = "${watchAgePrev}" ]; then
+      date=`isodate`
+      echo "building ${OS} @ ${date}"
+
+      outputFileDated="${FLAGS_output}-${date}"
+      if ${FLAGS_command} >"${FLAGS_output_dir}/${outputFileDated}" 2>&1; then
+        echo '-- OK'
+      else
+        echo '-- failed'
+      fi
+
+      ( cd "${FLAGS_output_dir}" || die "${FLAGS_output_dir} doesn't exist";
+        rm -f "${FLAGS_output}";
+        ln -s "${outputFileDated}" "${FLAGS_output}" )
+      watchAgePrev=${watchAge}
+    fi
+
+    watchAge=`stat "${FLAGS_watch}"`
+    if [ "${watchAge}" = "${watchAgePrev}" ]; then
+      while [ "${watchAge}" = "${watchAgePrev}" ]; do
+        sleep "${FLAGS_pause}"
+        watchAge=`stat "${FLAGS_watch}"`
+      done
+    fi
+  done
+}
+
+# Execute main() if this is run in standalone mode (i.e. not in a unit test).
+argv0=`echo "${ARGV0}" |sed 's/_test$//;s/_test\.sh$//'`
+if [ "${ARGV0}" = "${argv0}" ]; then
+  FLAGS "$@" || exit $?
+  eval set -- "${FLAGS_ARGV}"
+  if [ $# -gt 0 ]; then main "$@"; else main; fi
+fi
