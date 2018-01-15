@@ -139,19 +139,18 @@ versions_shellVersion() {
   case ${shell_} in
     */sh)
       # TODO(kward): fix this
-      ## this could be one of any number of shells. try until one fits.
+      ## This could be one of any number of shells. Try until one fits.
       #version_=`versions_shell_bash ${shell_}`
-      ## dash cannot be self determined yet
+      ## dash cannot be self determined yet.
       #[ -z "${version_}" ] && version_=`versions_shell_ksh ${shell_}`
-      ## pdksh is covered in versions_shell_ksh()
+      ## pdksh is covered in versions_shell_ksh().
       #[ -z "${version_}" ] && version_=`versions_shell_zsh ${shell_}`
       ;;
     ash) version_=`versions_shell_ash "${shell_}"` ;;
     */bash) version_=`versions_shell_bash "${shell_}"` ;;
     */dash)
-      # simply assuming Ubuntu Linux until somebody comes up with a better
-      # test. the following test will return an empty string if dash is not
-      # installed.
+      # Assuming Ubuntu Linux until somebody comes up with a better test. The
+      # following test will return an empty string if dash is not installed.
       version_=`versions_shell_dash`
       ;;
     */ksh) version_=`versions_shell_ksh "${shell_}"` ;;
@@ -175,7 +174,7 @@ versions_shell_bash() {
 
 versions_shell_dash() {
   eval dpkg >/dev/null 2>&1
-  [ $? -eq 127 ] && return  # return if dpkg not found
+  [ $? -eq 127 ] && return  # Return if dpkg not found.
 
   dpkg -l |grep ' dash ' |awk '{print $3}'
 }
