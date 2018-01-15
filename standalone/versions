@@ -3,7 +3,7 @@
 #
 # Versions determines the versions of all installed shells.
 #
-# Copyright 2008-2017 Kate Ward. All Rights Reserved.
+# Copyright 2008-2018 Kate Ward. All Rights Reserved.
 # Released under the Apache 2.0 License.
 #
 # Author: kate.ward@forestent.com (Kate Ward)
@@ -55,10 +55,13 @@ versions_osName() {
     FreeBSD) os_name_='FreeBSD' ;;
     Linux) os_name_='Linux' ;;
     SunOS)
-      if grep 'OpenSolaris' /etc/release >/dev/null; then
-        os_name_='OpenSolaris'
-      else
-        os_name_='Solaris'
+      os_name_='SunOS'
+      if [ -r '/etc/release' ]; then
+        if grep 'OpenSolaris' /etc/release >/dev/null; then
+          os_name_='OpenSolaris'
+        else
+          os_name_='Solaris'
+        fi
       fi
       ;;
   esac
@@ -99,18 +102,20 @@ versions_osVersion() {
       fi
       ;;
     SunOS)
-      if grep 'OpenSolaris' /etc/release >/dev/null; then
-        os_version_=`grep 'OpenSolaris' /etc/release |awk '{print $2"("$3")"}'`
-      else
-        major_=`echo "${os_release_}" |sed 's/[0-9]*\.\([0-9]*\)/\1/'`
-        minor_=`grep Solaris /etc/release |sed 's/[^u]*\(u[0-9]*\).*/\1/'`
-        os_version_="${major_}${minor_}"
+      if [ -r '/etc/release' ]; then
+        if grep 'OpenSolaris' /etc/release >/dev/null; then  # OpenSolaris
+          os_version_=`grep 'OpenSolaris' /etc/release |awk '{print $2"("$3")"}'`
+        else  # Solaris
+          major_=`echo "${os_release_}" |sed 's/[0-9]*\.\([0-9]*\)/\1/'`
+          minor_=`grep Solaris /etc/release |sed 's/[^u]*\(u[0-9]*\).*/\1/'`
+          os_version_="${major_}${minor_}"
+        fi
       fi
       ;;
   esac
 
   echo "${os_version_}"
-  unset os_name_ os_release_ os_version_ major_ minor_
+  unset os_release_ os_system_ os_version_ major_ minor_
 }
 
 versions_shellVersion() {
