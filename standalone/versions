@@ -145,6 +145,8 @@ versions_shellVersion() {
       #[ -z "${version_}" ] && version_=`versions_shell_ksh ${shell_}`
       ## pdksh is covered in versions_shell_ksh().
       #[ -z "${version_}" ] && version_=`versions_shell_zsh ${shell_}`
+      # TODO(20180115:kward) If ${UNAME_S} is SunOS, recommend implementing:
+      #   $ ln -sf /usr/xpg4/bin/sh /bin/sh
       ;;
     ash) version_=`versions_shell_ash "${shell_}"` ;;
     */bash) version_=`versions_shell_bash "${shell_}"` ;;
