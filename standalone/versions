@@ -3,7 +3,7 @@
 #
 # Versions determines the versions of all installed shells.
 #
-# Copyright 2008-2017 Kate Ward. All Rights Reserved.
+# Copyright 2008-2018 Kate Ward. All Rights Reserved.
 # Released under the Apache 2.0 License.
 #
 # Author: kate.ward@forestent.com (Kate Ward)
@@ -55,10 +55,13 @@ versions_osName() {
     FreeBSD) os_name_='FreeBSD' ;;
     Linux) os_name_='Linux' ;;
     SunOS)
-      if grep 'OpenSolaris' /etc/release >/dev/null; then
-        os_name_='OpenSolaris'
-      else
-        os_name_='Solaris'
+      os_name_='SunOS'
+      if [ -r '/etc/release' ]; then
+        if grep 'OpenSolaris' /etc/release >/dev/null; then
+          os_name_='OpenSolaris'
+        else
+          os_name_='Solaris'
+        fi
       fi
       ;;
   esac
@@ -82,30 +85,37 @@ versions_osVersion() {
       os_version_=`expr "${os_release_}" : '\([0-9]*\.[0-9]*\)-.*'`
       ;;
     Linux)
-      if [ -r "${LSB_RELEASE}" ]; then
+      if [ -r '/etc/os-release' ]; then
+          os_version_=`awk -F= '$1~/PRETTY_NAME/{print $2}' /etc/os-release \
+            |sed 's/"//g'`
+      elif [ -r '/etc/redhat-release' ]; then
+        os_version_=`cat /etc/redhat-release`
+      elif [ -r '/etc/SuSE-release' ]; then
+        os_version_=`head -n 1 /etc/SuSE-release`
+      elif [ -r "${LSB_RELEASE}" ]; then
         if grep -q 'DISTRIB_ID=Ubuntu' "${LSB_RELEASE}"; then
           # shellcheck disable=SC2002
           os_version_=`cat "${LSB_RELEASE}" \
             |awk -F= '$1~/DISTRIB_DESCRIPTION/{print $2}' \
             |sed 's/"//g;s/ /-/g'`
         fi
-      elif [ -r '/etc/redhat-release' ]; then
-        os_version_=`cat /etc/redhat-release`
       fi
       ;;
     SunOS)
-      if grep 'OpenSolaris' /etc/release >/dev/null; then
-        os_version_=`grep 'OpenSolaris' /etc/release |awk '{print $2"("$3")"}'`
-      else
-        major_=`echo "${os_release_}" |sed 's/[0-9]*\.\([0-9]*\)/\1/'`
-        minor_=`grep Solaris /etc/release |sed 's/[^u]*\(u[0-9]*\).*/\1/'`
-        os_version_="${major_}${minor_}"
+      if [ -r '/etc/release' ]; then
+        if grep 'OpenSolaris' /etc/release >/dev/null; then  # OpenSolaris
+          os_version_=`grep 'OpenSolaris' /etc/release |awk '{print $2"("$3")"}'`
+        else  # Solaris
+          major_=`echo "${os_release_}" |sed 's/[0-9]*\.\([0-9]*\)/\1/'`
+          minor_=`grep Solaris /etc/release |sed 's/[^u]*\(u[0-9]*\).*/\1/'`
+          os_version_="${major_}${minor_}"
+        fi
       fi
       ;;
   esac
 
   echo "${os_version_}"
-  unset os_name_ os_release_ os_version_ major_ minor_
+  unset os_release_ os_system_ os_version_ major_ minor_
 }
 
 versions_shellVersion() {
@@ -165,7 +175,7 @@ versions_shell_bash() {
 
 versions_shell_dash() {
   eval dpkg >/dev/null 2>&1
-  [ $? -eq 127 ] && return  # return if dpkg not found
+  [ $? -eq 127 ] && return  # Return if dpkg not found.
 
   dpkg -l |grep ' dash ' |awk '{print $3}'
 }
