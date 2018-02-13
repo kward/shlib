@@ -1,0 +1,80 @@
+# vim:et:ft=sh:sts=2:sw=2
+#
+# shlib_ansi provides ANSI color variables.
+#
+# Copyright 2018 Kate Ward. All Rights Reserved.
+# Released under the Apache 2.0 license.
+#
+# Author: kate.ward@forestent.com (Kate Ward)
+# https://github.com/kward/shlib
+#
+# expr may be antiquated, but it is the only solution in some cases.
+#   shellcheck disable=SC2003
+
+SHLIB_TRUE=0
+SHLIB_FALSE=1
+
+# ANSI color constants.
+SHLIB_ANSI_NONE='\033[0m'
+SHLIB_ANSI_RED='\033[1;31m'
+SHLIB_ANSI_GREEN='\033[1;32m'
+SHLIB_ANSI_YELLOW='\033[1;33m'
+SHLIB_ANSI_BLUE='\033[1;34m'
+SHLIB_ANSI_MAGENTA='\033[1;35m'
+SHLIB_ANSI_CYAN='\033[1;36m'
+SHLIB_ANSI_WHITE='\033[1;37m'
+
+# ANSI color variables, populated by call to `shlib_ansi_init()`.
+shlib_ansi_none=''
+shlib_ansi_red=''
+shlib_ansi_green=''
+shlib_ansi_yellow=''
+shlib_ansi_blue=''
+shlib_ansi_magenta=''
+shlib_ansi_cyan=''
+shlib_ansi_white=''
+
+# ansi_init initializes the ANSI variables based on the provided color mode.
+#
+# This command is provided so that scripts can choose whether color will be
+# enabled or not. Not all shell support color, so passing `auto` will "do the
+# right thing" and set the variables accordingly.
+#
+# Example:
+# shlib_ansi_init auto
+# echo "This color is ${shlib_ansi_red}red${shlib_ansi_none}."
+#
+# Args:
+#   color: string: color mode (one of `always`, `auto`, or `none`).
+# Returns:
+#   bool: success
+shlib_ansi_init() {
+  _shlib_color_=''  # By default, no color.
+  _shlib_ok_=${SHLIB_TRUE}
+  case $1 in
+    'always') _shlib_color_=$1 ;;
+    'auto')
+      ( exec tput >/dev/null 2>&1 )  # Check for existence of tput command.
+      if [ $? -lt 127 ]; then
+        _shlib_tput_=`tput colors`
+        # shellcheck disable=SC2166,SC2181
+        [ $? -eq 0 -a "${_shlib_tput_}" -ge 16 ] && _shlib_color_=$1
+        unset _shlib_tput_
+      fi
+      ;;
+    'none') ;;
+    *) echo "unrecognized option '$1'" >&2; _shlib_ok_=${SHLIB_FALSE} ;;
+  esac
+
+  shlib_ansi_none=${_shlib_color_:+${SHLIB_ANSI_NONE}}
+  shlib_ansi_red=${_shlib_color_:+${SHLIB_ANSI_RED}}
+  shlib_ansi_green=${_shlib_color_:+${SHLIB_ANSI_GREEN}}
+  shlib_ansi_yellow=${_shlib_color_:+${SHLIB_ANSI_YELLOW}}
+  shlib_ansi_blue=${_shlib_color_:+${SHLIB_ANSI_BLUE}}
+  shlib_ansi_magenta=${_shlib_color_:+${SHLIB_ANSI_MAGENTA}}
+  shlib_ansi_cyan=${_shlib_color_:+${SHLIB_ANSI_CYAN}}
+  shlib_ansi_white=${_shlib_color_:+${SHLIB_ANSI_WHITE}}
+
+  unset _shlib_color_
+  return "${_shlib_ok_}"
+}

@@ -8,6 +8,7 @@ Useful Shell routines.
 
 Files in the `functions` folder provide specific functionality.
 
+- `shlib_ansi` -- Provides functionality for using ANSI color in screen output.
 - `shlib_random` -- Generates a pseudo-random number the best way it can. It is by no means sufficient for security or cyptrography applications.
 - `shlib_relToAbsPath` -- Converts a relative path into an absolute path from
   the root of the file system.
