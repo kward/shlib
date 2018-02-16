@@ -37,7 +37,12 @@ testANSIInit() {
 
     echo "${none}" >"${wantF}"
     diff -u "${gotF}" "${wantF}"
-    assertTrue "${mode} got and want differ" $?
+    rtrn=$?
+    assertTrue "${mode} got and want differ" ${rtrn}
+    if [ "${rtrn}" -ne "${SHLIB_TRUE}" ]; then
+      echo '-- got --'; hexdump "${gotF}"
+      echo '-- want --'; hexdump "${wantF}"
+    fi
   done <<EOF
 always  ${SHLIB_ANSI_NONE} ${SHLIB_TRUE}
 auto    ${SHLIB_ANSI_NONE} ${SHLIB_TRUE}
