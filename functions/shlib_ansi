@@ -15,8 +15,8 @@
 # This library defines lots of variables it doesn't use.
 #   shellcheck disable=SC2034
 
-SHLIB_TRUE=0
-SHLIB_FALSE=1
+true; SHLIB_TRUE=$?
+false; SHLIB_FALSE=$?
 
 # ANSI color constants.
 SHLIB_ANSI_NONE='\033[0m'
