@@ -8,6 +8,9 @@
 #
 # Author: kate.ward@forestent.com (Kate Ward)
 # https://github.com/kward/shlib
+#
+# $() are not fully portable (POSIX != portable).
+#   shellcheck disable=SC2006
 
 # Treat unset variables as an error.
 set -u
@@ -17,9 +20,11 @@ testANSIInit() {
     [ "${none}" = "''" ] && none=''
 
     (
+      # shellcheck disable=SC2034
       tput='mock_tput'
       shlib_ansi_init "${mode}" >"${stdoutF}" 2>"${stderrF}"
       echo $? >"${returnF}"
+      # shellcheck disable=SC2154
       echo "${shlib_ansi_none}" >"${gotF}"
     )
 

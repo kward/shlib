@@ -10,6 +10,10 @@
 #
 # expr may be antiquated, but it is the only solution in some cases.
 #   shellcheck disable=SC2003
+# $() are not fully portable (POSIX != portable).
+#   shellcheck disable=SC2006
+# This library defines lots of variables it doesn't use.
+#   shellcheck disable=SC2034
 
 SHLIB_TRUE=0
 SHLIB_FALSE=1
