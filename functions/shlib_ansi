@@ -45,6 +45,9 @@ shlib_ansi_magenta=''
 shlib_ansi_cyan=''
 shlib_ansi_white=''
 
+# Use variables for commands for unit test mocking.
+__shlib_tput_cmd='tput'
+
 # ansi_init initializes the ANSI variables based on the provided color mode.
 #
 # This command is provided so that scripts can choose whether color will be
@@ -65,12 +68,13 @@ shlib_ansi_init() {
   case $1 in
     'always') _shlib_color_=$1 ;;
     'auto')
-      shlib_log_debug "`( exec tput colors 2>&1 )`"
-      ( exec tput >/dev/null 2>&1 )  # Check for existence of tput command.
+      shlib_log_debug "`( exec ${__shlib_tput_cmd} colors 2>&1 )`"
+      # Check for existence of tput command.
+      ( exec ${__shlib_tput_cmd} >/dev/null 2>&1 )
       if [ $? -lt 127 ]; then
-        _shlib_tput_=`tput colors`
+        _shlib_tput_=`${__shlib_tput_cmd} colors`
         # shellcheck disable=SC2166,SC2181
-        [ $? -eq 0 -a "${_shlib_tput_}" -ge 16 ] && _shlib_color_=$1
+        [ $? -eq 0 -a "${_shlib_tput_}" -ge 8 ] && _shlib_color_=$1
         unset _shlib_tput_
       fi
       ;;
