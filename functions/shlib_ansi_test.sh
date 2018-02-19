@@ -42,7 +42,7 @@ testANSIInit() {
       echo '-- got --'; hexdump "${gotF}"
       echo '-- want --'; hexdump "${wantF}"
     fi
-    if [ "${SHLIB_DEBUG}" -eq "${SHLIB_TRUE}" ]; then
+    if [ "${SHLIB_DEBUG:-}" = "${SHLIB_TRUE}" ]; then
       echo '-- stdout --'; cat "${stdoutF}"
       echo '-- stderr --'; cat "${stderrF}"
     fi
@@ -56,7 +56,7 @@ EOF
 
 oneTimeSetUp() {
   # shellcheck disable=SC2034
-  SHLIB_DEBUG=${SHUNIT_TRUE}; export SHLIB_DEBUG
+  #SHLIB_DEBUG=${SHUNIT_TRUE}; export SHLIB_DEBUG
 
   # Load the function.
   # shellcheck disable=SC1090
