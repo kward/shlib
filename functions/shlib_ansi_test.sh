@@ -21,7 +21,6 @@ testANSIInit() {
 
     (
       # shellcheck disable=SC2034
-      tput='mock_tput'
       shlib_ansi_init "${mode}" >"${stdoutF}" 2>"${stderrF}"
       echo $? >"${returnF}"
       # shellcheck disable=SC2154
@@ -55,11 +54,6 @@ invalid ''                 ${SHLIB_FALSE}
 EOF
 }
 
-# tput overrides the OS tput command.
-mock_tput() {
-  echo 256
-}
-
 oneTimeSetUp() {
   # shellcheck disable=SC2034
   SHLIB_DEBUG=${SHUNIT_TRUE}; export SHLIB_DEBUG
@@ -67,6 +61,12 @@ oneTimeSetUp() {
   # Load the function.
   # shellcheck disable=SC1090
   . "$(echo "$0" |sed 's/_test.sh$//')"
+
+  __shlib_tput_cmd="${SHUNIT_TMPDIR}/mock_tput"
+  cat <<EOF >"${__shlib_tput_cmd}"
+echo 32
+EOF
+  chmod +x "${__shlib_tput_cmd}"
 
   stdoutF="${SHUNIT_TMPDIR}/stdout"
   stderrF="${SHUNIT_TMPDIR}/stderr"
