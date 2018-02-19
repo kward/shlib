@@ -23,7 +23,7 @@ __SHLIB_DEBUG=':'
 [ "${SHLIB_DEBUG:-}" = "${SHLIB_TRUE}" ] && __SHLIB_DEBUG='echo'
 
 # shlib_log_debug outputs a debug level logging message.
-shlib_log_debug() { ${__SHLIB_DEBUG} "DEBUG: $@" >&2; }
+shlib_log_debug() { ${__SHLIB_DEBUG} "DEBUG: $*" >&2; }
 
 # ANSI color constants.
 SHLIB_ANSI_NONE='\033[0m'
@@ -65,7 +65,7 @@ shlib_ansi_init() {
   case $1 in
     'always') _shlib_color_=$1 ;;
     'auto')
-      ${SHLIB_DEBUG} `( echo tput colors 2>&1 )`
+      shlib_log_debug "`( exec tput colors 2>&1 )`"
       ( exec tput >/dev/null 2>&1 )  # Check for existence of tput command.
       if [ $? -lt 127 ]; then
         _shlib_tput_=`tput colors`

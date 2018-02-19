@@ -43,6 +43,10 @@ testANSIInit() {
       echo '-- got --'; hexdump "${gotF}"
       echo '-- want --'; hexdump "${wantF}"
     fi
+    if [ "${SHLIB_DEBUG}" -eq "${SHLIB_TRUE}" ]; then
+      echo '-- stdout --'; cat "${stdoutF}"
+      echo '-- stderr --'; cat "${stderrF}"
+    fi
   done <<EOF
 always  ${SHLIB_ANSI_NONE} ${SHLIB_TRUE}
 auto    ${SHLIB_ANSI_NONE} ${SHLIB_TRUE}
@@ -57,6 +61,9 @@ mock_tput() {
 }
 
 oneTimeSetUp() {
+  # shellcheck disable=SC2034
+  SHLIB_DEBUG=${SHUNIT_TRUE}; export SHLIB_DEBUG
+
   # Load the function.
   # shellcheck disable=SC1090
   . "$(echo "$0" |sed 's/_test.sh$//')"
@@ -67,9 +74,6 @@ oneTimeSetUp() {
   gotF="${SHUNIT_TMPDIR}/got"
   wantF="${SHUNIT_TMPDIR}/want"
   export stdoutF stderrF returnF gotF wantF
-
-  # shellcheck disable=SC2034
-  SHLIB_DEBUG=${SHLIB_TRUE}
 }
 
 # Run shUnit2.
