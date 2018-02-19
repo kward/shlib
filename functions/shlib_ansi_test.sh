@@ -67,6 +67,9 @@ oneTimeSetUp() {
   gotF="${SHUNIT_TMPDIR}/got"
   wantF="${SHUNIT_TMPDIR}/want"
   export stdoutF stderrF returnF gotF wantF
+
+  # shellcheck disable=SC2034
+  SHLIB_DEBUG=${SHLIB_TRUE}
 }
 
 # Run shUnit2.
