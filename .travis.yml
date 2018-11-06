@@ -4,6 +4,23 @@ env:
   - SHUNIT_COLOR='always'
 
 script:
-  - bash -c 'shopt -s globstar; shellcheck functions/*.sh standalone/*'
-  - bash -c 'shopt -s globstar; echo functions/* |fmt -1 |grep -v .sh$ | xargs shellcheck -s sh'
+  # Execute the unit tests.
   - ./shlib_test.sh
+
+os:
+  - linux
+  - osx
+
+addons:
+  apt:
+    packages:
+      - ksh
+      - zsh
+
+matrix:
+  include:
+    - os: linux
+      script:
+        # Run the source through ShellCheck (http://www.shellcheck.net).
+        - bash -c 'shopt -s globstar; shellcheck functions/*.sh standalone/*'
+        - bash -c 'shopt -s globstar; echo functions/* |fmt -1 |grep -v .sh$ | xargs shellcheck -s sh'
