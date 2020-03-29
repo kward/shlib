@@ -18,7 +18,7 @@
 
 ARGV0=`basename "$0"`
 LSB_RELEASE='/etc/lsb-release'
-VERSIONS_SHELLS='ash /bin/bash /bin/dash /bin/ksh /bin/mksh /bin/pdksh /bin/zsh /bin/sh /usr/xpg4/bin/sh /sbin/sh'
+VERSIONS_SHELLS='ash /bin/bash /bin/dash /bin/ksh /bin/mksh /bin/pdksh /bin/zsh /usr/xpg4/bin/sh /bin/sh /sbin/sh'
 
 true; TRUE=$?
 false; FALSE=$?
