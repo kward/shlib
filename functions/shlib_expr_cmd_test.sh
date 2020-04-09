@@ -32,4 +32,5 @@ oneTimeSetUp() {
 # Load and run shUnit2.
 # shellcheck disable=SC2034
 [ -n "${ZSH_VERSION:-}" ] && SHUNIT_PARENT=$0
+# shellcheck disable=SC1091
 . "${SHUNIT_LIB:-../lib}/shunit2"
