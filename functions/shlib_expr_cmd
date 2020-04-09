@@ -5,7 +5,6 @@
 # Released under the Apache 2.0 license.
 #
 # Author: kate.ward@forestent.com (Kate Ward)
-# https://github.com/kward/shlib
 
 # shlib_expr_cmd determines a reasonable default `expr` command.
 # https://github.com/kward/shlib
