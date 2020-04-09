@@ -16,12 +16,12 @@
 set -u
 
 test_testName() {
-	# shellcheck disable=SC2162
-	while read desc t tName; do
-		got=$(_runner_testName "${t}")
-		want=${tName}
-		assertEquals "${desc}" "${want}" "${got}"
-	done <<EOF
+  # shellcheck disable=SC2162
+  while read desc t tName; do
+    got=$(_runner_testName "${t}")
+    want=${tName}
+    assertEquals "${desc}" "${want}" "${got}"
+  done <<EOF
 valid   valid_script_test.sh valid_script
 unknown invalid_script       unknown
 empty   ''                   unknown
@@ -30,7 +30,7 @@ EOF
 }
 
 oneTimeSetUp() {
-	. ./test_runner
+  . ./test_runner
 }
 
 # Configure zsh properly for shUnit2.
