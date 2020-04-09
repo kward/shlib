@@ -25,15 +25,15 @@ shlib_expr_cmd() {
     return 0
   fi
 
-  _flags_expr_cmd_='expr --'
+  _shlib_expr_cmd_='expr --'
   # shellcheck disable=SC2003
-  if _flags_output_=$(expr -- 2>&1); then
-    if [ "${_flags_output_}" = '--' ]; then
+  if _shlib_output_=$(${_shlib_expr_cmd_} 2>&1); then
+    if [ "${_shlib_output_}" = '--' ]; then
       # We are likely running inside BusyBox.
-      _flags_expr_cmd_='expr'
+      _shlib_expr_cmd_='expr'
     fi
   fi
 
-  echo "${_flags_expr_cmd_}"
-  unset _flags_expr_cmd_ _flags_output_
+  echo "${_shlib_expr_cmd_}"
+  unset _shlib_expr_cmd_ _shlib_output_
 }
