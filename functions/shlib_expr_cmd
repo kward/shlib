@@ -1,0 +1,41 @@
+#! /bin/sh
+# vim:et:ft=sh:sts=2:sw=2
+#
+# shlib_expr_cmd function.
+#
+# Copyright 2020 Kate Ward. All Rights Reserved.
+# Released under the Apache 2.0 license.
+#
+# Author: kate.ward@forestent.com (Kate Ward)
+# https://github.com/kward/shlib
+
+# shlib_expr_cmd determines a reasonable default `expr` command.
+#
+# Use like:
+#   EXPR_CMD=$(shlib_expr_cmd)
+#   ${EXPR_CMD} 1 + 1
+#
+# Args:
+#   none
+# Output:
+#   string: expr command
+# Return
+#   int: 0 upon success
+shlib_expr_cmd() {
+  if [ "$(uname -s)" = 'BSD' ]; then
+    echo 'gexpr --'
+    return 0
+  fi
+
+  _flags_expr_cmd_='expr --'
+  # shellcheck disable=SC2003
+  if _flags_output_=$(expr -- 2>&1); then
+    if [ "${_flags_output_}" = '--' ]; then
+      # We are likely running inside BusyBox.
+      _flags_expr_cmd_='expr'
+    fi
+  fi
+
+  echo "${_flags_expr_cmd_}"
+  unset _flags_expr_cmd_ _flags_output_
+}
