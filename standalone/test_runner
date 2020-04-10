@@ -172,4 +172,6 @@ EOF
 }
 
 # Execute main() if this is run in standalone mode (i.e. not from a unit test).
-if [ -z "${SHUNIT_VERSION}" ]; then main "$@"; fi
+if [ -z "${SHUNIT_VERSION}" ]; then
+  main "$@"
+fi
