@@ -55,6 +55,7 @@ versions_osName() {
         12.*) os_name_='macOS Monterey' ;;
         13.*) os_name_='macOS Ventura' ;;
         14.*) os_name_='macOS Sonoma' ;;
+        15.*) os_name_='macOS Sequoia' ;;
         *) os_name_='macOS' ;;
       esac
       ;;
